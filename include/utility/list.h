@@ -1188,26 +1188,28 @@ public:
 
         if(e) {
 
-            e->shrink(s);
+            /*e->shrink(s);
             kout << "Diminuindo o tamanho do elemento (best-fit). Novo tamanho: " << e->size() << endl;
             _grouped_size -= s;
             if(!e->size())
-                remove(e);
+                remove(e);*/
 
-            
-            /*while(s <= (e->size()/2)){
+            char * ptr;
+            Element * novo;
+            while(s <= (e->size()/4)){ //da pra dividir o bloco duas vezes
                 //dividir o bloco ao meio
-                char * ptr = reinterpret_cast<char *>(e->object() + (e->size()/2)); //cria ponteiro para o segundo bloco
+                ptr = reinterpret_cast<char *>(e->object() + (e->size()/2) ); //cria ponteiro para o segundo bloco
+                novo = new (ptr) Element(ptr, (e->size())/2); //cria novo elemento no ponteiro do segundo bloco
                 e->shrink(e->size()/2);  // diminui o tamanho do primeiro bloco
-                Element * novo = new (ptr) Element(ptr, (e->size())); //cria novo elemento no ponteiro do segundo bloco
-                insert_tail(novo);
+                e = novo; //e aponta para o novo bloco, que esta no final da lista
+                insert_tail(e);// insere no final da lista
             }
 
-            _grouped_size -= s; 
-            if(!e->size())
-                remove(e);*/
+            e->shrink(s); //s ja esta sendo passado como potencia de 2
+            _grouped_size -= s;
+            if(!e->size()) //caso o tamanho do bloco seja igual o de s
+                remove(e);
         }
-
         return e;
     }
     
