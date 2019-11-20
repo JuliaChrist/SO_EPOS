@@ -611,7 +611,7 @@ private:
     unsigned int _grouped_size;
 };
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 // Doubly-Linked List
 template<typename T,
           typename El = List_Elements::Doubly_Linked<T> >
@@ -1073,7 +1073,7 @@ private:
     Element * volatile _chosen;
 };
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Doubly-Linked, Grouping List
 template<typename T, 
           typename El = List_Elements::Doubly_Linked_Grouping<T> >
@@ -1107,6 +1107,25 @@ public:
     Element * search_size(unsigned int s) {
         Element * e = head();
         for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
+        return e;
+    }
+
+    /*Element * search_size_buddy(unsigned int s) {
+        Element * e = head();
+        for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
+        return e;
+    }*/
+
+    Element * search_size_buddy(unsigned int s) {
+        Element * e;
+        Element * aux = head();
+
+        while(aux){
+            if((aux->size() >= s) && aux->size() < e->size()){
+                e = aux;
+            }
+            aux = aux->next();
+        }
         return e;
     }
     
@@ -1143,6 +1162,22 @@ public:
         print_tail();
 
         Element * e = search_size(s);
+        if(e) {
+            e->shrink(s);
+            _grouped_size -= s;
+            if(!e->size())
+                remove(e);
+        }
+
+        return e;
+    }
+
+    Element * search_decrementing_buddy(unsigned int s) {
+        db<Lists>(TRC) << "Grouping_List::search_decrementing(s=" << s << ")" << endl;
+        print_head();
+        print_tail();
+
+        Element * e = search_size_buddy(s);
         if(e) {
             e->shrink(s);
             _grouped_size -= s;

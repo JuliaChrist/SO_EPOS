@@ -97,21 +97,50 @@ public:
         free(addr, bytes);
     }
 
+    bool potencia_de_dois(unsigned int n){
+    while(n%2 == 0){
+        n = n/2;
+    }
+    if(n == 1){
+        return true;
+    }
+    return false;
+    }
+
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::alloc(this=" << this << ",bytes=" << bytes;
 
         if(!bytes)
             return 0;
 
-        if(!Traits<CPU>::unaligned_memory_access)
+/*        if(!Traits<CPU>::unaligned_memory_access)
             while((bytes % sizeof(void *)))
                 ++bytes;
 
         bytes += sizeof(int);         // add room for size
         if(bytes < sizeof(Element))
             bytes = sizeof(Element);
+*/
 
-        Element * e = search_decrementing(bytes);
+
+        /*alteração*/
+        unsigned int menor_bloco = sizeof(Element);
+        while(!potencia_de_dois(menor_bloco)){
+            menor_bloco++;
+        }
+
+        bytes += sizeof(int);
+
+        while(!potencia_de_dois(bytes)){
+            bytes++;
+        }
+
+        if(bytes < menor_bloco){
+            bytes = menor_bloco;
+        }
+        /*fim alteração*/
+
+        Element * e = search_decrementing_buddy(bytes);
         if(!e) {
             out_of_memory();
             return 0;

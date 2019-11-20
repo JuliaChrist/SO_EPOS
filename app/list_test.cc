@@ -21,11 +21,11 @@ int main()
 {
     cout << "List Utility Test" << endl;
 
-    test_simple_list();
-    test_simple_grouping_list();
-    test_list();
-    test_ordered_list();
-    test_relative_list();
+    //test_simple_list();
+    //test_simple_grouping_list();
+    //test_list();
+    //test_ordered_list();
+    //test_relative_list();
     test_grouping_list();
 
     cout << "\nDone!" << endl;
@@ -356,7 +356,7 @@ void test_grouping_list()
     cout << "The list has now " << l.size() << " elements that group "
          << l.grouped_size() << " bytes in total" << endl;
     cout << "Allocating 1 byte from the list => ";
-    d1 = l.search_decrementing(1);
+    d1 = l.search_decrementing_buddy(1);
     if(d1) {
         cout << (void *)(d1->object() + d1->size()) << endl;
         if(!d1->size()) {
@@ -367,7 +367,7 @@ void test_grouping_list()
         cout << "failed!" << endl;
     cout << "List size=" << l.size() << endl;
     cout << "Allocating 6 more bytes from the list => ";
-    d1 = l.search_decrementing(6);
+    d1 = l.search_decrementing_buddy(6);
     if(d1) {
         cout << (void *)(d1->object() + d1->size()) << endl;
         if(!d1->size()) {
@@ -378,7 +378,7 @@ void test_grouping_list()
     } else
         cout << "failed!" << endl;
     cout << "Allocating " << N * 2 << " more bytes from the list => ";
-    d1 = l.search_decrementing(N * 2);
+    d1 = l.search_decrementing_buddy(N * 2);
     if(d1) {
         cout << (void *)(d1->object() + d1->size()) << endl;
         if(!d1->size()) {
@@ -389,7 +389,7 @@ void test_grouping_list()
     } else
         cout << "failed!" << endl;
     cout << "Allocating " << (N * 2)-7 << " more bytes from the list => ";
-    d1 = l.search_decrementing((N * 2) - 7);
+    d1 = l.search_decrementing_buddy((N * 2) - 7);
     if(d1) {
         cout << (void *)(d1->object() + d1->size()) << endl;
         if(!d1->size()) {
