@@ -126,10 +126,13 @@ public:
         /*alteração*/
         unsigned int menor_bloco = sizeof(Element);
         while(!potencia_de_dois(menor_bloco)){
+            /*define o limite inferior: menor bloco de memoria possivel*/
             menor_bloco++;
         }
 
-        bytes += sizeof(int);
+        kout << "\n\nNumero de bytes solicitados: " << bytes << endl;
+
+        bytes += sizeof(int); //soma 4 bytes (sizeof(int)) para
 
         while(!potencia_de_dois(bytes)){
             bytes++;
@@ -137,21 +140,30 @@ public:
 
         if(bytes < menor_bloco){
             bytes = menor_bloco;
-        }
-        /*fim alteração*/
+        }                        
+       /*fim alteração*/
+        kout << "menor bloco: " << menor_bloco << endl;
+        kout << "numero de bytes a alocar: " << bytes << endl;
 
+        kout << "chamando search_decrementing_buddy" << endl;
         Element * e = search_decrementing_buddy(bytes);
+
+
         if(!e) {
             out_of_memory();
             return 0;
         }
 
+        kout << "vontando para a heap. Temos o endereço " << e << " no tamanho de " << e->size() << endl;
+        kout << "casting para int, com o offset para mandar a memória ao usuário" << endl;
         int * addr = reinterpret_cast<int *>(e->object() + e->size());
 
+        kout << "endereço inicial da memoria alocada (com 4 bytes para armazenar o tamanho): " << addr << endl;
         *addr++ = bytes;
 
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
 
+        kout << "endereço final retornado para a alocação: " << addr << endl;
         return addr;
     }
 

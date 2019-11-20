@@ -6,7 +6,7 @@
 
 using namespace EPOS;
 
-const int N = 10;
+const int N = 8;
 
 void test_simple_list();
 void test_list();
@@ -353,6 +353,7 @@ void test_grouping_list()
         }
     }
     cout << endl;
+    
     cout << "The list has now " << l.size() << " elements that group "
          << l.grouped_size() << " bytes in total" << endl;
     cout << "Allocating 1 byte from the list => ";

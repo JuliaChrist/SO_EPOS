@@ -1117,14 +1117,19 @@ public:
     }*/
 
     Element * search_size_buddy(unsigned int s) {
-        Element * e;
+        Element * e = head();
         Element * aux = head();
+
+        kout << "search_size_buddy executando" << endl; 
 
         while(aux){
             if((aux->size() >= s) && aux->size() < e->size()){
                 e = aux;
             }
             aux = aux->next();
+        }
+        if(e->size() < s){
+            e = aux;
         }
         return e;
     }
@@ -1166,7 +1171,7 @@ public:
             e->shrink(s);
             _grouped_size -= s;
             if(!e->size())
-                remove(e);
+                remove(e); 
         }
 
         return e;
@@ -1177,12 +1182,30 @@ public:
         print_head();
         print_tail();
 
+        kout << "decrementing chamando search_size_buddy" << endl;
         Element * e = search_size_buddy(s);
+        kout << "encontrado o best-fit no endereço: " << e << " Tamanho: " << e->size() << endl;
+
         if(e) {
+
             e->shrink(s);
+            kout << "Diminuindo o tamanho do elemento (best-fit). Novo tamanho: " << e->size() << endl;
             _grouped_size -= s;
             if(!e->size())
                 remove(e);
+
+            
+            /*while(s <= (e->size()/2)){
+                //dividir o bloco ao meio
+                char * ptr = reinterpret_cast<char *>(e->object() + (e->size()/2)); //cria ponteiro para o segundo bloco
+                e->shrink(e->size()/2);  // diminui o tamanho do primeiro bloco
+                Element * novo = new (ptr) Element(ptr, (e->size())); //cria novo elemento no ponteiro do segundo bloco
+                insert_tail(novo);
+            }
+
+            _grouped_size -= s; 
+            if(!e->size())
+                remove(e);*/
         }
 
         return e;
