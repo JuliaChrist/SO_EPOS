@@ -81,11 +81,11 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Heap_buddy: private Grouping_List<char>
+class Heap_buddy: private Grouping_List_heap<char>
 {
 public:
-    using Grouping_List<char>::empty;
-    using Grouping_List<char>::size;
+    using Grouping_List_heap<char>::empty;
+    using Grouping_List_heap<char>::size;
 
     Heap_buddy() {
         db<Init, Heaps>(TRC) << "Heap_buddy() => " << this << endl;
@@ -109,7 +109,7 @@ public:
 
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::alloc(this=" << this << ",bytes=" << bytes;
-
+        kout << "\n-----ALOCANDO-----" << endl;
         if(!bytes)
             return 0;
 
@@ -130,7 +130,7 @@ public:
             menor_bloco++;
         }
 
-        kout << "\n\nNumero de bytes solicitados: " << bytes << endl;
+        kout << "Numero de bytes solicitados: " << bytes << "+4(sizeof(int))" << endl;
 
         bytes += sizeof(int); //soma 4 bytes (sizeof(int)) para
 
@@ -154,27 +154,30 @@ public:
             return 0;
         }
 
-        kout << "vontando para a heap. Temos o endereço " << e << " no tamanho de " << e->size() << endl;
-        kout << "casting para int, com o offset para mandar a memória ao usuário" << endl;
+        kout << "Voltando para a heap. Temos o endereço " << e << " no tamanho de " << e->size() << " (a memoria passada para o usuário será a que vem depois deste bloco)" << endl;
+        kout << "Addr: fazendo casting para int, com o offset para mandar a memória ao usuário" << endl;
         int * addr = reinterpret_cast<int *>(e->object() + e->size());
 
-        kout << "endereço inicial da memoria alocada (com 4 bytes para armazenar o tamanho): " << addr << endl;
+        kout << "Endereço inicial da memoria alocada (com 4 bytes para armazenar o tamanho): " << addr << endl;
         *addr++ = bytes;
 
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
 
-        kout << "endereço final retornado para a alocação: " << addr << endl;
+        kout << "Endereço final retornado para a alocação: " << addr << " com tamanho de " << bytes << "bytes." << endl;
+        kout << "-----FIM ALOCAÇÃO-----" << endl;
         return addr;
+        
     }
 
     void free(void * ptr, unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
-
+        kout <<  "\n-----DANDO FREE EM " << ptr << "-----" << endl;
         if(ptr && (bytes >= sizeof(Element))) {
             Element * e = new (ptr) Element(reinterpret_cast<char *>(ptr), bytes);
             Element * m1, * m2;
             insert_merging(e, &m1, &m2);
         }
+        kout << "-----FIM DO FREE-----" << endl;
     }
 
     void free(void * ptr) {

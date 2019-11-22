@@ -326,32 +326,46 @@ void test_grouping_list()
         o[i][0] = 48 + i;
         o[i][1] = '\0';
         e[i] = new Grouping_List<char>::Element(&o[i][0], sizeof(char[32]));
+        kout << "-----INSERINDO NA LISTA DE TESTE-----" << endl;
         l.insert_merging(e[i], &d1, &d2);
+        kout << "-----FIM DA INSERINDO NA LISTA DE TESTE-----" << endl;
         cout << &o[i] << " (" << sizeof(char[32]) << "), ";
         if(d1) {
-            cout << "[nm]"; // next merged
+            cout << "[nm]\n"; // next merged
             delete d1;
         }
         if(d2) {
-            cout << "[tm]"; // this merged
+            cout << "[tm]\n"; // this merged
             delete d2;
         }
+        cout << "The list has now " << l.size() << " elements that group "
+         << l.grouped_size() << " bytes in total" << endl;
     }
+    kout << "--FIM DO PRIMEIRO FOR--"<<endl;
+    cout << "The list has now " << l.size() << " elements that group "
+         << l.grouped_size() << " bytes in total" << endl;
+
+         
     for(int i = 1; i < N; i += 2) {
         o[i][0] = 48 + i;
         o[i][1] = '\0';
         e[i] = new Grouping_List<char>::Element(&o[i][0], sizeof(char[32]));
+        kout << "-----INSERINDO NA LISTA DE TESTE-----" << endl;
         l.insert_merging(e[i], &d1, &d2);
+        kout << "-----FIM DA INSERINDO NA LISTA DE TESTE-----" << endl;
         cout << &o[i] << " (" << sizeof(char[32]) << "), ";
         if(d1) {
-            cout << "[nm]"; // next merged
+            cout << "[nm] juntou com o da direita"; // next merged
             delete d1;
         }
         if(d2) {
-            cout << "[tm]"; // this merged
+            cout << "[tm] juntou com o da esquerda"; // this merged
             delete d2;
         }
+        cout << "The list has now " << l.size() << " elements that group "
+         << l.grouped_size() << " bytes in total" << endl;
     }
+    kout << "--FIM DO SEGUNDO FOR--"<<endl;
     cout << endl;
     
     cout << "The list has now " << l.size() << " elements that group "
