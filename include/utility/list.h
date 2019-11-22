@@ -1110,13 +1110,14 @@ public:
         return e;
     }
 
-    Element * search_size_buddy(unsigned int s) {
+    /*Element * search_size_buddy(unsigned int s) {
         Element * e = head();
         for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
         return e;
-    }
+    }*/
 
-    /*Element * search_size_buddy(unsigned int s) {
+    Element * search_size_buddy(unsigned int s) { //best fit
+        kout << "Procurando best fit..." << endl;
         Element * e = head();
         Element * aux = head();
 
@@ -1132,7 +1133,7 @@ public:
             e = aux;
         }
         return e;
-    }*/
+    }
     
     Element * search_left(const Object_Type * obj) {
         Element * e = head();
@@ -1231,7 +1232,7 @@ public:
                 insert_tail(e);// insere no final da lista
             }*/
 
-            e->shrink(s); //s ja esta sendo passado como potencia de 2
+            e->shrink(s); //s ja esta sendo passado como potencia de 2 (NÃO TA ASSIM NO TESTE. PASSAR A TRANSFORMAÇÃO EM POTENCIA DE DOIS PARA DENTRO DESSA FUNÇÃO)
             _grouped_size -= s;
             if(!e->size()) //caso o tamanho do bloco seja igual o de s
                 remove(e);
@@ -1242,11 +1243,6 @@ public:
 private:
     unsigned int _grouped_size;
 };
-
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////q
 // Doubly-Linked, Grouping List
