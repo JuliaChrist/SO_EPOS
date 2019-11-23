@@ -14,7 +14,7 @@ void Heap::out_of_memory()
     _panic();
 }
 
-void Heap_buddy::out_of_memory()
+void Heap_Application::out_of_memory()
 {
     db<Heaps>(ERR) << "Heap::alloc(this=" << this << "): out of memory!" << endl;
 

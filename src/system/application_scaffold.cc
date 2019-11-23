@@ -7,7 +7,7 @@ __BEGIN_SYS
 
 // Application class attributes
 char Application::_preheap[];
-Heap_buddy * Application::_heap;
+Heap_Application * Application::_heap;
 
 __END_SYS
 

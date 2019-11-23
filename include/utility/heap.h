@@ -75,41 +75,26 @@ private:
     void out_of_memory();
 };
 
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Heap_buddy: private Grouping_List_heap<char>
+class Heap_Application: private Grouping_List<char>
 {
 public:
-    using Grouping_List_heap<char>::empty;
-    using Grouping_List_heap<char>::size;
+    using Grouping_List<char>::empty;
+    using Grouping_List<char>::size;
 
-    Heap_buddy() {
-        db<Init, Heaps>(TRC) << "Heap_buddy() => " << this << endl;
+    Heap_Application() {
+        db<Init, Heaps>(TRC) << "Heap_Application() => " << this << endl;
     }
 
-    Heap_buddy(void * addr, unsigned int bytes) {
-        db<Init, Heaps>(TRC) << "Heap_buddy(addr=" << addr << ",bytes=" << bytes << ") => " << this << endl;
+    Heap_Application(void * addr, unsigned int bytes) {
+        db<Init, Heaps>(TRC) << "Heap_Application(addr=" << addr << ",bytes=" << bytes << ") => " << this << endl;
 
         free(addr, bytes);
     }
 
-    bool potencia_de_dois(unsigned int n){
-    while(n%2 == 0){
-        n = n/2;
-    }
-    if(n == 1){
-        return true;
-    }
-    return false;
-    }
-
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::alloc(this=" << this << ",bytes=" << bytes;
-        kout << "\n-----ALOCANDO----- " << bytes << endl;
+        kout << "\n----------ALOCANDO NA HEAP---------- " << bytes << endl;
         if(!bytes)
             return 0;
 
@@ -163,25 +148,31 @@ public:
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
 
         kout << "Endereço final retornado para a alocação: " << addr << " com tamanho de " << bytes-sizeof(int) << "bytes." << endl;
-        kout << "-----FIM ALOCAÇÃO-----" << endl;
+        kout << "----------FIM ALOCAÇÃO - HEAP----------" << endl;
         return addr;
         
     }
 
     void free(void * ptr, unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
-        kout <<  "\n-----DANDO FREE EM " << ptr << "-----" << endl;
+        kout <<  "\n----------DANDO FREE EM " << ptr << "----------" << endl;
+        while(!potencia_de_dois(bytes)){
+            bytes++;
+        }
         if(ptr && (bytes >= sizeof(Element))) {
             Element * e = new (ptr) Element(reinterpret_cast<char *>(ptr), bytes);
             Element * m1, * m2;
-            insert_merging(e, &m1, &m2);
+            insert_merging_buddy(e, &m1, &m2);
         }
-        kout << "-----FIM DO FREE-----" << endl;
+        kout << "----------FIM DO FREE----------" << endl;
     }
 
     void free(void * ptr) {
         int * addr = reinterpret_cast<int *>(ptr);
         unsigned int bytes = *--addr;
+        while(!potencia_de_dois(bytes)){
+            bytes++;
+        }
         free(addr, bytes);
     }
 
