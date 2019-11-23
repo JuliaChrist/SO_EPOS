@@ -109,24 +109,24 @@ public:
 
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::alloc(this=" << this << ",bytes=" << bytes;
-        kout << "\n-----ALOCANDO-----" << endl;
+        kout << "\n-----ALOCANDO----- " << bytes << endl;
         if(!bytes)
             return 0;
 
-/*        if(!Traits<CPU>::unaligned_memory_access)
+        if(!Traits<CPU>::unaligned_memory_access)
             while((bytes % sizeof(void *)))
                 ++bytes;
 
         bytes += sizeof(int);         // add room for size
         if(bytes < sizeof(Element))
             bytes = sizeof(Element);
-*/
 
 
-        /*alteração*/
+
+        /*alteração
         unsigned int menor_bloco = sizeof(Element);
         while(!potencia_de_dois(menor_bloco)){
-            /*define o limite inferior: menor bloco de memoria possivel*/
+            define o limite inferior: menor bloco de memoria possivel
             menor_bloco++;
         }
 
@@ -141,9 +141,8 @@ public:
         if(bytes < menor_bloco){
             bytes = menor_bloco;
         }                        
-       /*fim alteração*/
-        kout << "menor bloco: " << menor_bloco << endl;
-        kout << "numero de bytes a alocar: " << bytes << endl;
+       fim alteração*/
+        //bytes += sizeof(int);
 
         kout << "chamando search_decrementing_buddy" << endl;
         Element * e = search_decrementing_buddy(bytes);
@@ -163,7 +162,7 @@ public:
 
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
 
-        kout << "Endereço final retornado para a alocação: " << addr << " com tamanho de " << bytes << "bytes." << endl;
+        kout << "Endereço final retornado para a alocação: " << addr << " com tamanho de " << bytes-sizeof(int) << "bytes." << endl;
         kout << "-----FIM ALOCAÇÃO-----" << endl;
         return addr;
         

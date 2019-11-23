@@ -345,7 +345,7 @@ void test_grouping_list()
     cout << "The list has now " << l.size() << " elements that group "
          << l.grouped_size() << " bytes in total" << endl;
 
-         
+
     for(int i = 1; i < N; i += 2) {
         o[i][0] = 48 + i;
         o[i][1] = '\0';
@@ -392,6 +392,7 @@ void test_grouping_list()
         cout << endl;
     } else
         cout << "failed!" << endl;
+    cout << "List size=" << l.size() << endl;
     cout << "Allocating " << N * 2 << " more bytes from the list => ";
     d1 = l.search_decrementing_buddy(N * 2);
     if(d1) {
@@ -403,8 +404,51 @@ void test_grouping_list()
         cout << endl;
     } else
         cout << "failed!" << endl;
+    cout << "List size=" << l.size() << endl;
     cout << "Allocating " << (N * 2)-7 << " more bytes from the list => ";
     d1 = l.search_decrementing_buddy((N * 2) - 7);
+    if(d1) {
+        cout << (void *)(d1->object() + d1->size()) << endl;
+        if(!d1->size()) {
+            cout << "[r]"; // removed
+            delete d1;
+        }
+        cout << endl;
+    } else
+        cout << "failed!" << endl;
+    cout << "The list has now " << l.size() << " elements that group " 
+         << l.grouped_size() << " elements in total" << endl;
+
+    cout << "Allocating 20" << " more bytes from the list => ";
+    d1 = l.search_decrementing_buddy(20);
+    if(d1) {
+        cout << (void *)(d1->object() + d1->size()) << endl;
+        if(!d1->size()) {
+            cout << "[r]"; // removed
+            delete d1;
+        }
+        cout << endl;
+    } else
+        cout << "failed!" << endl;
+    cout << "The list has now " << l.size() << " elements that group " 
+         << l.grouped_size() << " elements in total" << endl;
+
+    cout << "Allocating 17" << " more bytes from the list => ";
+    d1 = l.search_decrementing_buddy(17);
+    if(d1) {
+        cout << (void *)(d1->object() + d1->size()) << endl;
+        if(!d1->size()) {
+            cout << "[r]"; // removed
+            delete d1;
+        }
+        cout << endl;
+    } else
+        cout << "failed!" << endl;
+    cout << "The list has now " << l.size() << " elements that group " 
+         << l.grouped_size() << " elements in total" << endl;
+
+    cout << "Allocating 15" << " more bytes from the list => ";
+    d1 = l.search_decrementing_buddy(15);
     if(d1) {
         cout << (void *)(d1->object() + d1->size()) << endl;
         if(!d1->size()) {
