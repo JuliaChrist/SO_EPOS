@@ -10,7 +10,7 @@ int main()
 {
     OStream cout;
 
-    cout << "Memory allocation test" << endl;
+    cout << "\n\nMemory allocation test" << endl;
     char * cp = new char('A');
     cout << "new char('A')\t\t=> {p=" << (void *)cp << ",v=" << *cp << "}" << endl;
     int * ip = new int(1);
@@ -21,7 +21,7 @@ int main()
     strcpy(sp, "string");
     cout << "new char[1024]\t\t=> {p=" << (void *)sp << ",v=" << sp << "}" << endl;
 
-    cout << "deleting everything!" << endl; 
+    cout << "deleting everything!" << endl;
     delete cp;
     delete ip;
     delete lp;

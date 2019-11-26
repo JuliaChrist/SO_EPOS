@@ -3,6 +3,7 @@
 #ifndef __application_h
 #define __application_h
 
+#include <utility/ostream.h>
 #include <utility/heap.h>
 
 extern "C"
@@ -13,9 +14,11 @@ extern "C"
 
 __BEGIN_SYS
 
+
 class Application
 {
     friend class Init_Application;
+    friend class Heap_Test;
     friend void * ::malloc(size_t);
     friend void ::free(void *);
 
@@ -25,6 +28,16 @@ private:
 private:
     static char _preheap[sizeof(Heap_Application)];
     static Heap_Application * _heap;
+};
+
+/*classe utilizada para os testes de desempenho da alocação da memória*/
+class Heap_Test
+{
+public:
+	Heap_Application *heap_test;
+	Heap_Test(){
+		heap_test = Application::_heap;
+	}	
 };
 
 __END_SYS

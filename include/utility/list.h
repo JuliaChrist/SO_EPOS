@@ -1077,210 +1077,6 @@ private:
 // Doubly-Linked, Grouping List
 template<typename T, 
           typename El = List_Elements::Doubly_Linked_Grouping<T> >
-class Grouping_List2: public List<T, El>
-{
-private:
-    typedef List<T, El> Base;
-
-public:
-    typedef T Object_Type;
-    typedef El Element;
-    typedef List_Iterators::Bidirecional<El> Iterator;
-
-public:
-    Grouping_List2(): _grouped_size(0) {}
-
-    using Base::empty;
-    using Base::size;
-    using Base::head;
-    using Base::tail;
-    using Base::begin;
-    using Base::end;
-    using Base::insert_tail;
-    using Base::remove;
-    using Base::search;
-    using Base::print_head;
-    using Base::print_tail;
-
-    unsigned int grouped_size() const { return _grouped_size; }
-    
-    Element * search_size(unsigned int s) {
-        Element * e = head();
-        for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
-        return e;
-    }
-
-    /*Element * search_size_buddy(unsigned int s) {
-        Element * e = head();
-        for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
-        return e;
-    }*/
-
-    Element * search_size_buddy(unsigned int s) { //best fit
-        kout << "Procurando best fit..." << endl;
-        Element * e = head();
-        Element * aux = head();
-
-        kout << "search_size_buddy executando" << endl; 
-
-        while(aux){
-            if((aux->size() >= s) && aux->size() < e->size()){
-                e = aux;
-            }
-            aux = aux->next();
-        }
-        if(e->size() < s){
-            e = aux;
-        }
-        return e;
-    }
-    
-    Element * search_left(const Object_Type * obj) {
-        Element * e = head();
-        for(; e && (e->object() + e->size() != obj); e = e->next());
-        return e;
-    }
-
-
-    void insert_merging(Element * e, Element ** m1, Element ** m2) {
-        db<Lists>(TRC) << "Grouping_List::insert_merging(e=" << e << ")" << endl;
-        kout << "INSERINDO ELEMENTO DO PONTEIRO DO ENDEREÇO " << &(*e) << endl;
-        _grouped_size += e->size();
-        *m1 = *m2 = 0;
-        
-        Element * r = search(e->object() + e->size());
-        Element * l = search_left(e->object());
-
-        int count = 0;
-        
-        do{ 
-            if(r && (e->size() == r->size())) {
-                e->size(e->size() + r->size());
-                kout << "JUNTOU COM A DIREITA" << endl;
-                remove(r);
-                kout << "Removendo elemento da direita da lista" << endl;
-                *m1 = r;
-            }
-
-            if((!l) || (l && (e->size() != l->size()))) {
-                insert_tail(e);
-                kout <<"TA NA CAUDA" << endl;
-            }
-
-            if(l && (e->size() == l->size())) {
-                l->size(l->size() + e->size());
-                
-                kout << "JUNTOU COM A ESQUERDA" << endl;
-
-                if(count != 0){
-                    remove(e);
-                }
-
-                *m2 = e;
-                e = l;
-                count++;
-            }
-
-            r = search(e->object() + e->size());
-            l = search_left(e->object());
-
-        }while((r && (e->size() == r->size())) || (l && (e->size() == l->size())));
-    }
-    
-
-    
-    Element * search_decrementing(unsigned int s) {
-        db<Lists>(TRC) << "Grouping_List::search_decrementing(s=" << s << ")" << endl;
-        print_head();
-        print_tail();
-
-        Element * e = search_size(s);
-        if(e) {
-            e->shrink(s);
-            _grouped_size -= s;
-            if(!e->size())
-                remove(e); 
-        }
-
-        return e;
-    }
-
-    bool potencia_de_dois(unsigned int n){
-        while(n%2 == 0){
-            n = n/2;
-        }
-        if(n == 1){
-            return true;
-        }
-        return false;
-    }
-
-    Element * search_decrementing_buddy(unsigned int s) {
-        db<Lists>(TRC) << "Grouping_List::search_decrementing(s=" << s << ")" << endl;
-        print_head();
-        print_tail();
-        ////////////////////////////////////////////
-        unsigned int menor_bloco = sizeof(Element);
-        while(!potencia_de_dois(menor_bloco)){
-            /*define o limite inferior: menor bloco de memoria possivel*/
-            menor_bloco++;
-        }
-
-        kout << "menor bloco: " << menor_bloco << endl;
-
-        kout << "Numero de bytes solicitados: " << s << endl;
-
-
-        while(!potencia_de_dois(s)){
-            s++;
-        }
-
-        if(s < menor_bloco){
-            s = menor_bloco;
-        }
-
-        ////////////////////////////////////////////
-        kout << "decrementing chamando search_size_buddy" << endl;
-        Element * e = search_size_buddy(s);
-        kout << "encontrado o best-fit no endereço: " << e << " Tamanho: " << e->size() << endl;
-
-        if(e) {
-            char * ptr;
-            Element * novo;
-            while(s <= (e->size()/4)){ //da pra dividir o bloco duas vezes
-                //dividir o bloco ao meio
-                kout << "Dividindo bloco ao meio..." << endl;
-                ptr = reinterpret_cast<char *>(e->object() + (e->size()/2) ); //cria ponteiro para o segundo bloco
-                novo = new (ptr) Element(ptr, (e->size())/2); //cria novo elemento no ponteiro do segundo bloco
-                kout << "NOVO ELEMENT0 EM " << novo << endl;
-                e->shrink(e->size()/2);  // diminui o tamanho do primeiro bloco
-                kout << "TAMANHO DE e REDUZIDO PARA " << e->size() << endl;
-                e = novo; //e aponta para o novo bloco, que esta no final da lista
-                kout << "e = novo" << endl;
-                insert_tail(e);
-                kout << "Novo bloco inserido no fim da lista" << endl;
-            }
-
-            kout << "Chamando shrink" << endl;
-            e->shrink(s); //s ja esta sendo passado como potencia de 2 (NÃO TA ASSIM NO TESTE. PASSAR A TRANSFORMAÇÃO EM POTENCIA DE DOIS PARA DENTRO DESSA FUNÇÃO)
-            kout << "Tamanho de e reduzido para " << e->size() << endl;
-            _grouped_size -= s;
-            if(!e->size()) {//caso o tamanho do bloco seja igual o de s
-                remove(e);
-                 kout << "e removido da lista" << endl;
-             }
-        }
-        return e;
-    }
-    
-private:
-    unsigned int _grouped_size;
-};
-
-//////////////////////////////////////////////////////////////////////////////q
-// Doubly-Linked, Grouping List
-template<typename T, 
-          typename El = List_Elements::Doubly_Linked_Grouping<T> >
 class Grouping_List: public List<T, El>
 {
 private:
@@ -1309,15 +1105,15 @@ public:
     unsigned int grouped_size() const { return _grouped_size; }
     
     Element * search_size(unsigned int s) {
-        kout << "*search_size executando (test_list)*" << endl;
+        //kout << "*search_size executando (test_list)*" << endl;
         Element * e = head();
         for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
         return e;
     }
 
     Element * search_size_buddy(unsigned int s) { //best fit
-        kout << "*search_size_buddy executando (HEAP)*" << endl; 
-        kout << "Procurando best fit..." << endl;
+        //kout << "*search_size_buddy executando (HEAP)*" << endl; 
+        //kout << "Procurando best fit..." << endl;
         Element * e = head();
         Element * aux = head();
 
@@ -1341,69 +1137,71 @@ public:
 
     void insert_merging(Element * e, Element ** m1, Element ** m2) {
         db<Lists>(TRC) << "Grouping_List::insert_merging(e=" << e << ")" << endl;
-        kout << "*insert_merging executando (test_list)*" << endl;
-        kout << "INSERINDO ELEMENTO DO PONTEIRO DO ENDEREÇO " << e << " TAMANHO " << e->size() << endl;
+        //kout << "*insert_merging executando (test_list)*" << endl;
+        //kout << "INSERINDO ELEMENTO DO PONTEIRO DO ENDEREÇO " << e << " TAMANHO " << e->size() << endl;
         _grouped_size += e->size();
         *m1 = *m2 = 0;
         Element * r = search(e->object() + e->size());
         Element * l = search_left(e->object());
         if(!l) {
             insert_tail(e);
-            kout <<"ELEMENTO INSERIDO NA CAUDA" << endl;
+            //kout <<"ELEMENTO INSERIDO NA CAUDA" << endl;
         }
         if(r) {
             e->size(e->size() + r->size());
-            kout << "JUNTOU COM A DIREITA" << endl;
+            //kout << "JUNTOU COM A DIREITA" << endl;
             remove(r);
-            kout << "Removendo elemento da direita da lista..." << endl;
+            //kout << "Removendo elemento da direita da lista..." << endl;
             *m1 = r;
         }
         if(l) {
             l->size(l->size() + e->size());
-            kout << "JUNTOU COM A ESQUERDA" << endl;
+            //kout << "JUNTOU COM A ESQUERDA" << endl;
             *m2 = e;
         }
     }
     
     void insert_merging_buddy(Element * e, Element ** m1, Element ** m2) {
         db<Lists>(TRC) << "Grouping_List::insert_merging(e=" << e << ")" << endl;
-        kout << "*insert_merging_buddy executando (HEAP)*" << endl;
-        kout << "INSERINDO ELEMENTO DO ENDEREÇO " << e << " TAMANHO " << e->size() << endl;
+        //kout << "*insert_merging_buddy executando (HEAP)*" << endl;
+        //kout << "INSERINDO ELEMENTO DO ENDEREÇO " << e << " TAMANHO " << e->size() << endl;
         _grouped_size += e->size();
         *m1 = *m2 = 0;
         
         Element * r = search(e->object() + e->size());
         Element * l = search_left(e->object());
 
-        int count = 0;
+
         
         do{ 
             if(r && (e->size() == r->size())) {
                 e->size(e->size() + r->size());
-                kout << "JUNTOU COM A DIREITA" << endl;
+                //kout << "JUNTOU COM A DIREITA" << endl;
                 remove(r);
-                kout << "Removendo elemento da direita da lista..." << endl;
+                //kout << "Removendo elemento da direita da lista..." << endl;
                 *m1 = r;
             }
 
             if((!l) || (l && (e->size() != l->size()))) {
-                insert_tail(e);
-                kout <<"ELEMENTO DE TAMANHO " << e->size() << "INSERIDO NA CAUDA" << endl;
+                if(!search(e->object())){
+                    insert_tail(e);
+                    //kout <<"ELEMENTO DE TAMANHO " << e->size() << " INSERIDO NA CAUDA" << endl;
+                }
+                
             }
 
             if(l && (e->size() == l->size())) {
                 l->size(l->size() + e->size());
                 
-                kout << "JUNTOU COM A ESQUERDA" << endl;
+                //kout << "JUNTOU COM A ESQUERDA" << endl;     
 
-                if(count != 0){
+                if(search(e->object())){
                     remove(e);
-                    kout << "Removendo e da lista..." << endl;
+                    //kout << "Removendo e da lista..." << endl;
                 }
 
                 *m2 = e;
                 e = l;
-                count++;
             }
 
             r = search(e->object() + e->size());
@@ -1416,16 +1214,16 @@ public:
         db<Lists>(TRC) << "Grouping_List::search_decrementing(s=" << s << ")" << endl;
         print_head();
         print_tail();
-        kout << "*search_decrementing executando (list_test)*" << endl;
+        //kout << "*search_decrementing executando (list_test)*" << endl;
         Element * e = search_size(s);
         if(e) {
-            kout << "Chamando shrink..." << endl;
+            //kout << "Chamando shrink..." << endl;
             e->shrink(s);
-            kout << "Tamanho de e reduzido para " << e->size() << endl;
+            //kout << "Tamanho de e reduzido para " << e->size() << endl;
             _grouped_size -= s;
             if(!e->size()){
                 remove(e); 
-                kout << "e foi removido da lista" << endl;
+                //kout << "e foi removido da lista" << endl;
             }
         }
 
@@ -1446,7 +1244,7 @@ public:
         db<Lists>(TRC) << "Grouping_List::search_decrementing_buddy(s=" << s << ")" << endl;
         print_head();
         print_tail();
-        kout << "*search_decrementing_buddy executando (HEAP)*" << endl;
+        //kout << "*search_decrementing_buddy executando (HEAP)*" << endl;
         
         unsigned int menor_bloco = sizeof(Element);
         while(!potencia_de_dois(menor_bloco)){
@@ -1454,8 +1252,8 @@ public:
             menor_bloco++;
         }
 
-        kout << "Menor bloco pssível: " << menor_bloco << endl;
-        kout << "Numero de bytes solicitados: " << s << endl;
+        //kout << "Menor bloco pssível: " << menor_bloco << endl;
+        //kout << "Numero de bytes solicitados: " << s << endl;
 
         while(!potencia_de_dois(s)){
             s++;
@@ -1465,32 +1263,32 @@ public:
             s = menor_bloco;
         }
 
-        kout << "Chamando search_size_buddy" << endl;
+        //kout << "Chamando search_size_buddy" << endl;
         Element * e = search_size_buddy(s);
-        kout << "encontrado o best-fit no endereço: " << e << " de tamanho: " << e->size() << endl;
+        //kout << "encontrado o best-fit no endereço: " << e << " de tamanho: " << e->size() << endl;
 
         if(e) {
             char * ptr;
             Element * novo;
             while(s <= (e->size()/4)){ //da pra dividir o bloco duas vezes
-                kout << "Dividindo bloco ao meio..." << endl;
+                //kout << "Dividindo bloco ao meio..." << endl;
                 ptr = reinterpret_cast<char *>(e->object() + (e->size()/2) ); //cria ponteiro para o segundo bloco
                 novo = new (ptr) Element(ptr, (e->size())/2); //cria novo elemento no ponteiro do segundo bloco
-                kout << "Novo elemento em " << novo << endl;
+                //kout << "Novo elemento em " << novo << endl;
                 e->shrink(e->size()/2);  // diminui o tamanho do primeiro bloco
-                kout << "Tamanho de e reduzido para " << e->size() << endl;
+                //kout << "Tamanho de e reduzido para " << e->size() << endl;
                 e = novo; //e aponta para o novo bloco, que esta no final da lista
                 insert_tail(e);
-                kout << "Novo bloco de tamanho " << e->size() << " inserido no fim da lista, e = novo (e aponta para ele)" << endl;
+                //kout << "Novo bloco de tamanho " << e->size() << " inserido no fim da lista, e = novo (e aponta para ele)" << endl;
             }
 
-            kout << "Chamando shrink..." << endl;
+            //kout << "Chamando shrink..." << endl;
             e->shrink(s); //s ja esta sendo passado como potencia de 2 (NÃO TA ASSIM NO TESTE. PASSAR A TRANSFORMAÇÃO EM POTENCIA DE DOIS PARA DENTRO DESSA FUNÇÃO)
-            kout << "Tamanho de e reduzido para " << e->size() << endl;
+            //kout << "Tamanho de e reduzido para " << e->size() << endl;
             _grouped_size -= s;
             if(!e->size()) {//caso o tamanho do bloco seja igual o de s
                 remove(e);
-                 kout << "e foi removido da lista" << endl;
+                 //kout << "e foi removido da lista" << endl;
              }
         }
         return e;
