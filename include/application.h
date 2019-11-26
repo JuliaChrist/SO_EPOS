@@ -28,8 +28,13 @@ private:
 private:
 	//static char _preheap[sizeof(Heap)];
     static char _preheap[sizeof(Heap_Application)];
+<<<<<<< HEAD
     //static Heap * _heap;
+=======
+    //static char _preheap[sizeof(Heap)];    
+>>>>>>> esse
     static Heap_Application * _heap;
+    //static Heap * _heap;
 };
 
 /*classe utilizada para os testes de desempenho da alocação da memória*/

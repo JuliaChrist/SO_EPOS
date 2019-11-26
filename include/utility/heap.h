@@ -27,11 +27,18 @@ public:
         free(addr, bytes);
     }
 
+    unsigned int get_grouped_size(void){
+        return(grouped_size());
+    }
+
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap::alloc(this=" << this << ",bytes=" << bytes;
 
         if(!bytes)
             return 0;
+
+        //kout << "\n---------------------------------------------------------" << endl;
+        //kout << "ALLOC " << bytes << "+sizeof(int) BYTES" << endl;
 
         if(!Traits<CPU>::unaligned_memory_access)
             while((bytes % sizeof(void *)))
@@ -49,21 +56,31 @@ public:
 
         int * addr = reinterpret_cast<int *>(e->object() + e->size());
 
+        //kout << "END ALLOC -> " << addr << endl;
+        //kout << "---------------------------------------------------------" << endl;
+
         *addr++ = bytes;
 
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
+
+  
 
         return addr;
     }
 
     void free(void * ptr, unsigned int bytes) {
         db<Heaps>(TRC) << "Heap::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
+        //kout << "\n---------------------------------------------------------" << endl;
+        //kout << "FREE " << ptr << endl;
 
         if(ptr && (bytes >= sizeof(Element))) {
             Element * e = new (ptr) Element(reinterpret_cast<char *>(ptr), bytes);
             Element * m1, * m2;
             insert_merging(e, &m1, &m2);
         }
+
+        //kout << "END FREE" << endl;
+        //kout << "---------------------------------------------------------" << endl;  
     }
 
     void free(void * ptr) {
@@ -99,9 +116,12 @@ public:
 
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::alloc(this=" << this << ",bytes=" << bytes;
-        //kout << "\n----------ALOCANDO NA HEAP---------- " << bytes << endl;
+              
         if(!bytes)
             return 0;
+
+        //kout << "\n---------------------------------------------------------" << endl;
+        //kout << "ALLOC " << bytes << "+sizeof(int) BYTES" << endl;
 
         if(!Traits<CPU>::unaligned_memory_access)
             while((bytes % sizeof(void *)))
@@ -111,33 +131,30 @@ public:
         if(bytes < sizeof(Element))
             bytes = sizeof(Element);
 
-        //kout << "chamando search_decrementing_buddy" << endl;
         Element * e = search_decrementing_buddy(bytes);
-
 
         if(!e) {
             out_of_memory();
             return 0;
         }
 
-        //kout << "Voltando para a heap. Temos o endereço " << e << " no tamanho de " << e->size() << " (a memoria passada para o usuário será a que vem depois deste bloco)" << endl;
-        //kout << "Addr: fazendo casting para int, com o offset para mandar a memória ao usuário" << endl;
         int * addr = reinterpret_cast<int *>(e->object() + e->size());
 
-        //kout << "Endereço inicial da memoria alocada (com 4 bytes para armazenar o tamanho): " << addr << endl;
+        //kout << "END ALLOC -> " << addr << endl;
+        //kout << "---------------------------------------------------------" << endl; 
         *addr++ = bytes;
 
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
-
-        //kout << "Endereço final retornado para a alocação: " << addr << " com tamanho de " << bytes-sizeof(int) << "bytes." << endl;
-        //kout << "----------FIM ALOCAÇÃO - HEAP----------" << endl;
+ 
         return addr;
         
     }
 
     void free(void * ptr, unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
-        //kout <<  "\n----------DANDO FREE EM " << ptr << "----------" << endl;
+        //kout << "\n---------------------------------------------------------" << endl;
+        //kout << "FREE " << ptr << endl;
+
         while(!potencia_de_dois(bytes)){
             bytes++;
         }
@@ -146,7 +163,9 @@ public:
             Element * m1, * m2;
             insert_merging_buddy(e, &m1, &m2);
         }
-        //kout << "----------FIM DO FREE----------" << endl;
+
+        //kout << "END FREE" << endl;
+        //kout << "---------------------------------------------------------" << endl;  
     }
 
     void free(void * ptr) {
