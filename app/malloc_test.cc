@@ -4,17 +4,39 @@
 #include <utility/string.h>
 #include <utility/malloc.h>
 #include <utility/list.h>
+#include <utility/math.h>
 #include <chronometer.h>
+
+#define NUM_TESTES 200
 
 using namespace EPOS;
 
+float sqrt(float num){
+    int n;
+    float aux = num;
+
+    for (n = 0; n < 100; n++)
+          aux = aux/2 + num/(2*aux);
+
+    return(aux);
+}
+
 float media(unsigned int * vetor, int size){
     float soma = 0;
-    int i;
-    for(i = 0; i < size; i++){
+    for(int i = 0; i < size; i++){
         soma += vetor[i];
     }
     return(soma/(float)size);
+}
+
+float desvio(unsigned int * vetor, int size){
+    float p = 0.0;
+    float m = media(vetor, size);
+
+    for(int i = 0; i < size; i++){
+        p += (((float)vetor[i] - m)*((float)vetor[i] - m));
+    }
+    return(sqrt(p/(float)(size-1)));
 }
 
 int main()
@@ -25,7 +47,7 @@ int main()
     int count, i;
     char *vet[255];
 
-    unsigned int test1[100], test2[100], test3[100];
+    unsigned int test1[NUM_TESTES], test2[NUM_TESTES], test3[NUM_TESTES];
 
     cout << "\nMemory allocation test" << endl;
 
@@ -59,7 +81,7 @@ int main()
     
 
     /*Teste 1: alocação de espaços pequenos (bytes)*/
-    for(count = 0; count < 100; count++){
+    for(count = 0; count < NUM_TESTES; count++){
 
         cronometro.start();
 
@@ -79,7 +101,7 @@ int main()
 
 
     /*Teste 2: Alocação de espaços grandes (kbytes)*/
-    for(count = 0; count < 100; count++){
+    for(count = 0; count < NUM_TESTES; count++){
 
         cronometro.start();
 
@@ -98,7 +120,7 @@ int main()
  
 
     /*Teste 3: Alocação de espaços pequenos e grandes (faixa de bytes a kbytes)*/
-    for(count = 0; count < 100; count++){
+    for(count = 0; count < NUM_TESTES; count++){
         int aux;
         cronometro.start();
 
@@ -115,11 +137,13 @@ int main()
         cronometro.reset();
     }
 
-    cout << "Média de tempo[Teste 1]: " << media(test1, 100) << endl;
-    cout << "Média de tempo[Teste 2]: " << media(test2, 100) << endl;
-    cout << "Média de tempo[Teste 3]: " << media(test3, 100) << endl;
-    cout << endl;
+    cout << "\nMédia de tempo[Teste 1]: " << media(test1, NUM_TESTES) << endl;
+    cout << "Desvio Padrão [Teste 1]: " << desvio(test1, NUM_TESTES) << endl;
+    cout << "\nMédia de tempo[Teste 2]: " << media(test2, NUM_TESTES) << endl;
+    cout << "Desvio Padrão [Teste 2]: " << desvio(test2, NUM_TESTES) << endl;
+    cout << "\nMédia de tempo[Teste 3]: " << media(test3, NUM_TESTES) << endl;
+    cout << "Desvio Padrão [Teste 3]: " << desvio(test3, NUM_TESTES) << endl;
+    cout << endl << endl;
 
-    
     return 0;
 }
