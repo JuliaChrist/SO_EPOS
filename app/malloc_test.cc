@@ -23,11 +23,8 @@ int main()
     OStream cout;
 
     cout << "\nMemory allocation test - Buddy Allocation" << endl;
-<<<<<<< HEAD
-=======
     
 /* 
->>>>>>> esse
 
     //Teste de aproveitamento. 
     //Reduzir o HEAP_SIZE em include/machine/pc/legacy_traits.h para 1024 para facilitar o entendimento.
