@@ -26,7 +26,9 @@ private:
     static void init();
 
 private:
+	//static char _preheap[sizeof(Heap)];
     static char _preheap[sizeof(Heap_Application)];
+    //static Heap * _heap;
     static Heap_Application * _heap;
 };
 
@@ -35,6 +37,7 @@ class Heap_Test
 {
 public:
 	Heap_Application *heap_test;
+	//Heap *heap_test;
 	Heap_Test(){
 		heap_test = Application::_heap;
 	}	

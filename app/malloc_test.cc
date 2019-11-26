@@ -49,7 +49,7 @@ int main()
 
     unsigned int test1[NUM_TESTES], test2[NUM_TESTES], test3[NUM_TESTES];
 
-    cout << "\nMemory allocation test" << endl;
+    cout << "\nMemory allocation test - Buddy Allocation" << endl;
 
 
     /*char *A = new char[60];
