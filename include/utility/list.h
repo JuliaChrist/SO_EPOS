@@ -1162,9 +1162,11 @@ public:
         
         do{ 
             if(r && (e->size() == r->size())) {
-                e->size(e->size() + r->size());
-                remove(r);
-                *m1 = r;
+                if((e->size() != l->size())){
+                    e->size(e->size() + r->size());
+                    remove(r);
+                    *m1 = r;
+                }
             }
 
             if((!l) || (l && (e->size() != l->size()))) {
@@ -1201,7 +1203,6 @@ public:
                 remove(e);
             }
         }
-
         return e;
     }
 

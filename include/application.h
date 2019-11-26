@@ -26,13 +26,8 @@ private:
     static void init();
 
 private:
-	//static char _preheap[sizeof(Heap)];
     static char _preheap[sizeof(Heap_Application)];
-<<<<<<< HEAD
-    //static Heap * _heap;
-=======
-    //static char _preheap[sizeof(Heap)];    
->>>>>>> esse
+    //static char _preheap[sizeof(Heap)];
     static Heap_Application * _heap;
     //static Heap * _heap;
 };

@@ -120,8 +120,8 @@ public:
         if(!bytes)
             return 0;
 
-        //kout << "\n---------------------------------------------------------" << endl;
-        //kout << "ALLOC " << bytes << "+sizeof(int) BYTES" << endl;
+        kout << "\n---------------------------------------------------------" << endl;
+        kout << "ALLOC " << bytes << "+sizeof(int) BYTES" << endl;
 
         if(!Traits<CPU>::unaligned_memory_access)
             while((bytes % sizeof(void *)))
@@ -140,8 +140,8 @@ public:
 
         int * addr = reinterpret_cast<int *>(e->object() + e->size());
 
-        //kout << "END ALLOC -> " << addr << endl;
-        //kout << "---------------------------------------------------------" << endl; 
+        kout << "END ALLOC -> " << addr << endl;
+        kout << "---------------------------------------------------------" << endl; 
         *addr++ = bytes;
 
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
@@ -152,8 +152,8 @@ public:
 
     void free(void * ptr, unsigned int bytes) {
         db<Heaps>(TRC) << "Heap_buddy::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
-        //kout << "\n---------------------------------------------------------" << endl;
-        //kout << "FREE " << ptr << endl;
+        kout << "\n---------------------------------------------------------" << endl;
+        kout << "FREE " << ptr << endl;
 
         while(!potencia_de_dois(bytes)){
             bytes++;
@@ -164,8 +164,8 @@ public:
             insert_merging_buddy(e, &m1, &m2);
         }
 
-        //kout << "END FREE" << endl;
-        //kout << "---------------------------------------------------------" << endl;  
+        kout << "END FREE" << endl;
+        kout << "---------------------------------------------------------" << endl;  
     }
 
     void free(void * ptr) {

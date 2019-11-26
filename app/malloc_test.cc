@@ -8,6 +8,7 @@
 
 #define NUM_TESTES 200
 
+
 using namespace EPOS;
 
 
@@ -24,10 +25,9 @@ int main()
 
     cout << "\nMemory allocation test - Buddy Allocation" << endl;
     
-/* 
 
     //Teste de aproveitamento. 
-    //Reduzir o HEAP_SIZE em include/machine/pc/legacy_traits.h para 1024 para facilitar o entendimento.
+    //Reduzir o HEAP_SIZE em include/machine/pc/legacy_traits.h para 16384 (16KBytes) para facilitar o entendimento.
 
     cout << "\nALOCANDO A MEMÓRIA " << endl;
     char *A = new char[50];
@@ -40,6 +40,30 @@ int main()
         cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
          << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
     char *D = new char[90];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;
+    char *E = new char[5000];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
+    char *F = new char[1100];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
+    char *G = new char[400];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
+    char *H = new char[230];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;
+    char *I = new char[6];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
+    char *J = new char[32];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
+    char *K = new char[1];
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total" << endl;  
+    char *L = new char[570];
         cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
          << heap.heap_test->get_grouped_size() << " bytes in total" << endl;
 
@@ -59,10 +83,33 @@ int main()
     delete D;
         cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
          << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;
+    delete L;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;
+    delete F;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;     
+    delete G;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;
+    delete K;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;         
+    delete J;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;
+    delete H;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;
+    delete I;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;
+    delete E;
+        cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
+         << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;         
+         
 
-*/
-
-
+/* 
 ///////////////////////////////////////////////////////////////////////////////////////////////
     //Testes de tempo
     int count, i;
@@ -135,7 +182,7 @@ int main()
     cout << "\nMédia de tempo[Teste 3]: " << media(test3, NUM_TESTES) << endl;
     cout << "Desvio Padrão [Teste 3]: " << desvio(test3, NUM_TESTES) << endl;
     cout << endl << endl;
-
+*/
 
 
     return 0;
