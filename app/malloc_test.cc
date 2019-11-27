@@ -24,8 +24,8 @@ int main()
     OStream cout;
 
     cout << "\nMemory allocation test - Buddy Allocation" << endl;
-    
 
+/*
     //Teste de aproveitamento. 
     //Reduzir o HEAP_SIZE em include/machine/pc/legacy_traits.h para 16384 (16KBytes) para facilitar o entendimento.
 
@@ -107,9 +107,9 @@ int main()
     delete E;
         cout << "\nThe heap has now " << heap.heap_test->size() << " elements that group "
          << heap.heap_test->get_grouped_size() << " bytes in total\n" << endl;         
-         
+*/         
 
-/* 
+ 
 ///////////////////////////////////////////////////////////////////////////////////////////////
     //Testes de tempo
     int count, i;
@@ -175,14 +175,14 @@ int main()
         cronometro.reset();
     }
 
-    cout << "\nMédia de tempo[Teste 1]: " << media(test1, NUM_TESTES) << endl;
+    cout << "\nMédia de tempo[Teste 1]: " << media(test1, NUM_TESTES) << " us" << endl;
     cout << "Desvio Padrão [Teste 1]: " << desvio(test1, NUM_TESTES) << endl;
-    cout << "\nMédia de tempo[Teste 2]: " << media(test2, NUM_TESTES) << endl;
+    cout << "\nMédia de tempo[Teste 2]: " << media(test2, NUM_TESTES) << " us" << endl;
     cout << "Desvio Padrão [Teste 2]: " << desvio(test2, NUM_TESTES) << endl;
-    cout << "\nMédia de tempo[Teste 3]: " << media(test3, NUM_TESTES) << endl;
+    cout << "\nMédia de tempo[Teste 3]: " << media(test3, NUM_TESTES) << " us" << endl;
     cout << "Desvio Padrão [Teste 3]: " << desvio(test3, NUM_TESTES) << endl;
     cout << endl << endl;
-*/
+
 
 
     return 0;
